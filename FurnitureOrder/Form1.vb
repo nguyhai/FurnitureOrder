@@ -9,9 +9,9 @@
 
 Public Class frmFurnitureOrder
     ' Create constants for the prices
-    Dim chairPrice As Double = 350.0
-    Dim sofaPrice As Double = 925
-    Dim salesTax As Double = 0.05
+    Dim ChairPrice As Double = 350.0
+    Dim SofaPrice As Double = 925
+    Dim SalesTax As Double = 0.05
 
     Private Sub btnQuit_Click(sender As Object, e As EventArgs) Handles btnQuit.Click
         Me.Close()
@@ -27,21 +27,27 @@ Public Class frmFurnitureOrder
         Dim orderPrice As Double
 
         Dim name As String = txtName.Text
+        Dim reverseName As String
         Dim address As String = txtAddress.Text
         Dim cityStateZip As String = txtCity.Text
         Dim invoiceNumber As String
 
         ' Get inputs and assign values to variables
+        If ValidateInput(name, address, cityStateZip) Then
+            numOfChairs = CInt(txtChairs.Text)
+            numOfSofas = CInt(txtSofas.Text)
 
+            ' Run functions to process the invoice number and invoice total cost, then another function to reverse the input of the name
+            totalCost = CalculateTotalInvoice(numOfChairs, numOfSofas, totalTax, orderPrice)
+            invoiceNumber = CreateInvoiceNumber(name, cityStateZip)
+            reverseName = ReorderName(name)
+        End If
 
-        ' Run functions to process the invoice number and invoice
-        totalCost = CalculateTotalInvoice(numOfChairs, numOfSofas)
-        invoiceNumber = CreateInvoiceNumber(name, cityStateZip)
         ' Display the order 
-
 
     End Sub
 
+    ' Methods
     Private Function ValidateInput(name As String, street As String, cityStateZip As String) As Boolean
         If Not name.Contains(", ") Or name.Length < 4 Then
             MessageBox.Show("Invalid name, make sure names are separated by a comma.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -57,8 +63,6 @@ Public Class frmFurnitureOrder
         End If
     End Function
 
-
-
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
         txtAddress.Clear()
         txtChairs.Clear()
@@ -67,24 +71,43 @@ Public Class frmFurnitureOrder
         txtSofas.Clear()
     End Sub
 
-    ' Methods
-    Function CreateInvoiceNumber(name As String, zip As String) As String
+    Function CreateInvoiceNumber(name As String, cityStateZip As String) As String
         ' The invoice number consists of the capitalized first two letters of the customers last name, followed by the last four digits of the zip code. 
-        ' We will need to parse out the last name and get the first 2 letters, then the last 4 digits of zip
+        ' We will need to parse out the last name and get the first 2 letters, then the last 4 digits of zip. use substrings
 
+        Dim zipDigits As String
+        Dim lettersName As String
+        zipDigits = cityStateZip.Substring(cityStateZip.Length - 4) ' Last 4 digits
+        lettersName = name.Substring(0, 2).ToUpper
 
-
-    End Function
-    Function CalculateTotalInvoice(chairs As Integer, sofas As Integer) As Double
-        Dim totalChairCost As Double
-        Dim totalSofaCost As Double
-        Dim totalAmount As Double = (totalChairCost * chairPrice) + (totalSofaCost * sofaPrice)
-
-        Return totalAmount + (totalAmount * salesTax)
-    End Function
-    Function ReorderName() As String
+        Return lettersName + zipDigits
     End Function
 
+    Function CalculateTotalInvoice(chairs As Integer, sofas As Integer, ByRef totalTax As Double, ByRef orderPrice As Double) As Double
+        ' Passing in total Tax and orderPrice as by reference, so this way it changes the values at their location
+        orderPrice = (chairs * ChairPrice) + (sofas * SofaPrice)
+        totalTax = orderPrice * SalesTax
 
+        Return orderPrice + totalTax
+    End Function
+
+
+    Function ReorderName(name As String) As String
+        Dim firstName As String
+        Dim lastName As String
+        Dim commaPosition As Integer
+
+        ' Get the comma position
+        commaPosition = name.IndexOf(",")
+
+        firstName = name.Substring(commaPosition + 2) ' This makes it so that it will pull everything 2 spaces after the comma, which is the first name that we had
+        lastName = name.Substring(0, commaPosition)
+
+        Return firstName + ", " + lastName
+    End Function
+
+    Private Sub DisplayInvoice()
+
+    End Sub
 
 End Class

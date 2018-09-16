@@ -23,29 +23,41 @@ Public Class frmFurnitureOrder
         Dim numOfSofas As Integer
 
         Dim totalCost As Double
+        Dim totalTax As Double
+        Dim orderPrice As Double
 
-        Dim name As String
-        Dim address As String
-        Dim cityStateZip As String
+        Dim name As String = txtName.Text
+        Dim address As String = txtAddress.Text
+        Dim cityStateZip As String = txtCity.Text
         Dim invoiceNumber As String
 
         ' Get inputs and assign values to variables
-        If Integer.TryParse(txtChairs.Text, numOfChairs) And Integer.TryParse(txtSofas.Text, numOfSofas) And txtName.Text <> "" And txtAddress.Text <> "" And txtCity.Text <> "" Then
-            name = txtName.Text
-            address = txtAddress.Text
-            cityStateZip = txtCity.Text
-
-            ' Run functions to process the invoice number and invoice
-            totalCost = CalculateTotalInvoice(numOfChairs, numOfSofas)
-            invoiceNumber = CreateInvoiceNumber(name, cityStateZip)
-            ' Display the order 
 
 
-        Else
-            MessageBox.Show("Please enter valid inputs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End If
+        ' Run functions to process the invoice number and invoice
+        totalCost = CalculateTotalInvoice(numOfChairs, numOfSofas)
+        invoiceNumber = CreateInvoiceNumber(name, cityStateZip)
+        ' Display the order 
+
 
     End Sub
+
+    Private Function ValidateInput(name As String, street As String, cityStateZip As String) As Boolean
+        If Not name.Contains(", ") Or name.Length < 4 Then
+            MessageBox.Show("Invalid name, make sure names are separated by a comma.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        ElseIf street = "" Or cityStateZip = "" Then
+            MessageBox.Show("Invalid stree, city, state, or zip", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        ElseIf Not IsNumeric(txtChairs.Text) Or Not IsNumeric(txtSofas.Text) Then
+            MessageBox.Show("Invalid input for chairs or sofas", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        Else
+            Return True
+        End If
+    End Function
+
+
 
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
         txtAddress.Clear()

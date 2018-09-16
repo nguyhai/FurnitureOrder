@@ -41,9 +41,11 @@ Public Class frmFurnitureOrder
             totalCost = CalculateTotalInvoice(numOfChairs, numOfSofas, totalTax, orderPrice)
             invoiceNumber = CreateInvoiceNumber(name, cityStateZip)
             reverseName = ReorderName(name)
+
+            ' Display the order 
+            DisplayInvoice(numOfChairs, numOfSofas, orderPrice, totalTax, totalCost, invoiceNumber, reverseName, address, cityStateZip)
         End If
 
-        ' Display the order 
 
     End Sub
 
@@ -106,7 +108,23 @@ Public Class frmFurnitureOrder
         Return firstName + ", " + lastName
     End Function
 
-    Private Sub DisplayInvoice()
+    Private Sub DisplayInvoice(chairs As Integer, sofas As Integer, orderPrice As Double, totalTax As Double, totalDue As Double, invoiceNumber As String, reversedName As String, street As String, cityStateZip As String)
+        lstDisplay.Items.Add("Invoice Number: " + invoiceNumber)
+        lstDisplay.Items.Add("")
+        lstDisplay.Items.Add("Name: " + reversedName)
+        lstDisplay.Items.Add("Street: " + street)
+        lstDisplay.Items.Add("City, State, Zip: " + cityStateZip)
+        lstDisplay.Items.Add("")
+        lstDisplay.Items.Add("Number of Chairs: " + chairs.ToString())
+        lstDisplay.Items.Add("Number of Sofas: " + sofas.ToString())
+        lstDisplay.Items.Add("")
+        lstDisplay.Items.Add("Order Price: " + FormatCurrency(orderPrice))
+        lstDisplay.Items.Add("Sales Tax: " + FormatCurrency(totalTax))
+        lstDisplay.Items.Add("--------------------------------------------")
+        lstDisplay.Items.Add("Total Price: " + FormatCurrency(totalDue))
+
+
+
 
     End Sub
 
